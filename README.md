@@ -7,18 +7,26 @@ NLP module provided by **NLP_Neurolytics** (DistilRoBERTa, unchanged).
 
 ## Project Structure
 
-```
+```text
 Neurolytics/
-├── main.py              ← FastAPI app — routes, NLPAnalyzer singleton, pipeline
-├── speech_module.py     ← WhisperX transcription, diarization, WPM calc
-├── fusion.py            ← Multimodal fusion algorithm
-├── schemas.py           ← Pydantic API data contracts
-├── requirements.txt     ← Dependencies (versions locked to NLP team's spec)
-│
-└── nlp/                 ← NLP module — DistilRoBERTa emotion analyzer
-    ├── __init__.py
-    ├── nlp_module.py    ← NLPAnalyzer class (DistilRoBERTa)
-    └── nlp_schemas.py   ← NLPOutput + EmotionScores dataclasses
+├── backend/             ← FastAPI backend application
+│   ├── main.py          ← FastAPI app — routes, pipeline
+│   ├── fusion.py        ← Multimodal fusion algorithm
+│   ├── schemas.py       ← Pydantic API data contracts
+│   ├── services/
+│   │   ├── speech_diarization.py ← WhisperX transcription, diarization, WPM calc
+│   │   └── nlp_module.py         ← NLP service integration
+│   └── requirements.txt ← Backend dependencies
+├── frontend/            ← Next.js / React frontend application
+│   ├── app/             ← Next.js App Router (pages, layouts)
+│   ├── components/      ← Reusable UI components
+│   └── package.json     ← Frontend dependencies
+├── nlp/                 ← NLP module — DistilRoBERTa emotion analyzer
+│   ├── __init__.py
+│   ├── nlp_module.py    ← NLPAnalyzer class (DistilRoBERTa)
+│   └── nlp_schemas.py   ← NLPOutput + EmotionScores dataclasses
+├── main.py              ← Project root entry point
+└── requirements.txt     ← Root dependencies
 ```
 
 ---
