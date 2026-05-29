@@ -44,7 +44,7 @@ export default function SignupPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <Activity className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="font-bold text-xl">Clinical Analyzer</span>
+              <span className="font-bold text-xl">Neurolytics</span>
             </div>
             <h1 className="text-2xl font-bold">Create Account</h1>
             <p className="text-muted-foreground mt-2">Join us to start analyzing clinical consultations</p>

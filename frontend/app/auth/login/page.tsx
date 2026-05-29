@@ -43,7 +43,7 @@ export default function LoginPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <Activity className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="font-bold text-xl">Clinical Analyzer</span>
+              <span className="font-bold text-xl">Neurolytics</span>
             </div>
             <h1 className="text-2xl font-bold">Welcome Back</h1>
             <p className="text-muted-foreground mt-2">Sign in to your account to continue</p>
