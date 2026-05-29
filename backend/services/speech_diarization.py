@@ -85,10 +85,10 @@ def _load_audio(audio_path: str):
 
 def _transcribe(audio: Any, asr_model: Any, batch_size: int):
     logger.info('[Speech] Transcribing audio')
-    result = asr_model.transcribe(audio, batch_size=batch_size)
+    result = asr_model.transcribe(audio, batch_size=batch_size, language='en')
     if not result.get('segments'):
         raise ValueError('No speech detected in the audio file.')
-    logger.info(f'[Speech] Transcription complete. Language={result.get('language')} Segments={len(result['segments'])}')
+    logger.info(f'[Speech] Transcription complete. Language={result.get("language")} Segments={len(result["segments"])}')
     return result
 
 def _align(audio: Any, result: Dict[str, Any], device: str):
