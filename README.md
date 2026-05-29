@@ -1,4 +1,4 @@
-# Neurolytics — Backend v2
+# Neurolytics
 
 Multimodal stress detection from doctor-patient audio recordings.
 NLP module provided by **NLP_Neurolytics** (DistilRoBERTa, unchanged).
