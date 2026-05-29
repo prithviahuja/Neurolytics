@@ -16,13 +16,17 @@ venv.bak/
 .env
 backend/.env
 
-# ML Models and large datasets
-ml_models/
+# ML Models and large datasets (exclude weights, not source code)
 *.pt
 *.pth
 *.h5
 *.model
 *.onnx
+*.bin
+*.safetensors
+models/
+weights/
+checkpoints/
 
 # IDE and Editor directories
 .vscode/
