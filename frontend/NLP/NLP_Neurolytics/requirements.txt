@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────────────
-# Clinical Dialogue Analyzer — Full Requirements
+# Neurolytics — Full Requirements
 # ─────────────────────────────────────────────────────────────
 # Install everything:   pip install -r requirements.txt
 # Python version:       3.10+ required

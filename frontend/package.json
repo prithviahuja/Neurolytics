@@ -1,7 +1,7 @@
 {
   "name": "clinical-dialogue-analyzer-frontend",
   "version": "1.0.0",
-  "description": "Frontend for Clinical Dialogue Analyzer - stress detection from doctor-patient audio",
+  "description": "Frontend for Neurolytics - AI-powered stress detection from doctor-patient audio",
   "private": true,
   "scripts": {
     "dev": "next dev",

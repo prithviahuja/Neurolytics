@@ -99,7 +99,7 @@ def _run_nlp(text: str) -> NLPOutput:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     status_msg = "ready ✓" if _nlp_analyzer else "NOT loaded ✗ (degraded mode)"
-    logger.info(f"⚡  Clinical Dialogue Analyzer starting. NLP model: {status_msg}")
+    logger.info(f"⚡  Neurolytics starting. NLP model: {status_msg}")
     yield
     logger.info("Server shutting down.")
 
@@ -109,7 +109,7 @@ async def lifespan(app: FastAPI):
 # ─────────────────────────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title       = "Clinical Dialogue Analyzer",
+    title       = "Neurolytics",
     description = (
         "**Multimodal stress detection from doctor-patient audio recordings.**\n\n"
         "Upload a `.wav` file to `POST /api/v1/analyze-consultation` and receive "
@@ -172,7 +172,7 @@ def _nlp_output_to_schema(nlp: NLPOutput) -> NLPAnalysisResult:
 async def health_check():
     return {
         "status":    "ok",
-        "service":   "Clinical Dialogue Analyzer",
+        "service":   "Neurolytics",
         "nlp_model": "loaded" if _nlp_analyzer else "not_loaded (degraded)",
     }
 

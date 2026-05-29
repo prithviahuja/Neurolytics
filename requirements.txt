@@ -1,4 +1,4 @@
-# Clinical Dialogue Analyzer — Python Dependencies
+# Neurolytics — Python Dependencies
 # ─────────────────────────────────────────────────────────────
 # Exact versions sourced from NLP_Neurolytics/requirements.txt
 # for full compatibility with the NLP team's module.

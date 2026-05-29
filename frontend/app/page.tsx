@@ -209,7 +209,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border/50 py-12 px-4 sm:px-6 lg:px-8 mt-12">
         <div className="mx-auto max-w-6xl text-center text-sm text-muted-foreground">
-          <p>© 2024 Clinical Dialogue Analyzer. HIPAA Compliant. All rights reserved.</p>
+          <p>© 2024 Neurolytics. HIPAA Compliant. All rights reserved.</p>
         </div>
       </footer>
     </main>

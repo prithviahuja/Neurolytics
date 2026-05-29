@@ -9,7 +9,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Clinical Dialogue Analyzer',
+  title: 'Neurolytics',
   description: 'AI-powered stress and anxiety detection from clinical consultations',
 }
 

@@ -1,4 +1,4 @@
-# Clinical Dialogue Analyzer — Python Dependencies
+# Neurolytics — Python Dependencies
 # ─────────────────────────────────────────────────────────────
 # Install:
 #   pip install -r requirements.txt

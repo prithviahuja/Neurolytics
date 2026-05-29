@@ -1,4 +1,4 @@
-# Clinical Dialogue Analyzer — Backend v2
+# Neurolytics — Backend v2
 
 Multimodal stress detection from doctor-patient audio recordings.
 NLP module provided by **NLP_Neurolytics** (DistilRoBERTa, unchanged).
