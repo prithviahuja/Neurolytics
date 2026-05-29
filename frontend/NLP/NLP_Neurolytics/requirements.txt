@@ -1,0 +1,30 @@
+# ─────────────────────────────────────────────────────────────
+# Clinical Dialogue Analyzer — Full Requirements
+# ─────────────────────────────────────────────────────────────
+# Install everything:   pip install -r requirements.txt
+# Python version:       3.10+ required
+# ─────────────────────────────────────────────────────────────
+
+# ── Phase 1: API Layer ────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pydantic==2.7.1
+python-multipart==0.0.9
+
+# ── Phase 2: Speech & Diarization ────────────────────────────
+# Uncomment when starting Phase 2:
+# torch==2.2.2
+# torchaudio==2.2.2
+# whisperx==3.1.5
+# pyannote.audio==3.1.1
+# ffmpeg-python==0.2.0
+
+# ── Phase 3: NLP (YOUR PART) ─────────────────────────────────
+transformers==4.40.2
+torch==2.2.2
+scipy==1.13.0
+
+# ── Dev / Testing ─────────────────────────────────────────────
+httpx==0.27.0
+pytest==8.2.0
+python-dotenv==1.0.1
