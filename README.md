@@ -8,7 +8,7 @@ NLP module provided by **NLP_Neurolytics** (DistilRoBERTa, unchanged).
 ## Project Structure
 
 ```
-clinical_analyzer/
+Neurolytics/
 ├── main.py              ← FastAPI app — routes, NLPAnalyzer singleton, pipeline
 ├── speech_module.py     ← WhisperX transcription, diarization, WPM calc
 ├── fusion.py            ← Multimodal fusion algorithm

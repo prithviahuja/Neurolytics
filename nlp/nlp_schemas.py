@@ -1,6 +1,3 @@
-"""
-NLP schema dataclasses copied into local package.
-"""
 from dataclasses import dataclass, field
 from typing import Dict
 
@@ -15,13 +12,7 @@ class EmotionScores:
     surprise: float = 0.0
 
     def to_dict(self) -> Dict[str, float]:
-        return {
-            "anger": self.anger, "disgust": self.disgust,
-            "fear": self.fear, "joy": self.joy,
-            "neutral": self.neutral, "sadness": self.sadness,
-            "surprise": self.surprise
-        }
-
+        return {'anger': self.anger, 'disgust': self.disgust, 'fear': self.fear, 'joy': self.joy, 'neutral': self.neutral, 'sadness': self.sadness, 'surprise': self.surprise}
 
 @dataclass
 class NLPOutput:
@@ -30,6 +21,6 @@ class NLPOutput:
     pronoun_density: float = 0.0
     avg_sentence_complexity: float = 0.0
     word_count: int = 0
-    dominant_emotion: str = "neutral"
+    dominant_emotion: str = 'neutral'
     low_data_warning: bool = False
     error: str | None = None
