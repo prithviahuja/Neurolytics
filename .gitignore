@@ -16,7 +16,7 @@ venv.bak/
 .env
 backend/.env
 
-# ML Models and large datasets (exclude weights, not source code)
+# Pre-trained model weights (exclude weights, not source code)
 *.pt
 *.pth
 *.h5
@@ -27,6 +27,8 @@ backend/.env
 models/
 weights/
 checkpoints/
+huggingface/
+.cache/
 
 # IDE and Editor directories
 .vscode/

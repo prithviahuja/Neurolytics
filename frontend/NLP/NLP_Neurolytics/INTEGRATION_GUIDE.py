@@ -6,15 +6,15 @@ the NLP module. You don't need to read nlp_module.py at all.
 
 FILES YOU NEED
 ──────────────
-  ml_models/nlp_module.py       ← the model (don't touch)
-  ml_models/nlp_schemas.py      ← the output types (read this)
+  nlp/nlp_module.py       ← the model (don't touch)
+  nlp/nlp_schemas.py      ← the output types (read this)
 
 TWO-STEP INTEGRATION
 ────────────────────
 
 STEP 1 — Initialize ONCE at server startup (top of main.py):
 
-    from ml_models.nlp_module import NLPAnalyzer
+    from nlp.nlp_module import NLPAnalyzer
 
     # This loads the 500MB model into RAM.
     # Do this at module level, NOT inside the endpoint function.

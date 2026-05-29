@@ -25,7 +25,7 @@ import logging
 from dataclasses import dataclass
 from typing import List
 
-from ml_models.nlp_schemas import NLPOutput
+from nlp.nlp_schemas import NLPOutput
 from schemas import FusionResult, RiskLevel, SpeechAnalysisResult
 
 logger = logging.getLogger(__name__)

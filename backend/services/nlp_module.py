@@ -17,7 +17,7 @@ PUBLIC INTERFACE (this is all the backend needs to know)
 
     analyzer = NLPAnalyzer()          # Do this ONCE at app startup
     result = analyzer.analyze(text)   # Call this per request
-    # result is an NLPOutput dataclass — see ml_models/nlp_schemas.py
+    # result is an NLPOutput dataclass — see nlp/nlp_schemas.py
 
 WHY DISTILROBERTA SPECIFICALLY
 ───────────────────────────────
@@ -47,7 +47,7 @@ warnings.filterwarnings("ignore")
 
 from transformers import pipeline
 
-from ml_models.nlp_schemas import NLPOutput, EmotionScores
+from nlp.nlp_schemas import NLPOutput, EmotionScores
 
 
 # ─────────────────────────────────────────────────────────────
@@ -145,7 +145,7 @@ class NLPAnalyzer:
         Returns
         -------
         NLPOutput
-            See ml_models/nlp_schemas.py for full field documentation.
+            See nlp/nlp_schemas.py for full field documentation.
             Always check result.error first — if it's not None,
             the scores are not reliable.
         """

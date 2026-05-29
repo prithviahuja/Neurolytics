@@ -1,25 +1,18 @@
 """
 main.py — Clinical Dialogue Analyzer  |  FastAPI Backend
 =========================================================
-Run from the backend/ directory with:
+Run with:
     uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 Swagger UI  : http://localhost:8000/docs
 Health check: http://localhost:8000/health
 
-Environment
-───────────
-Copy backend/.env.example → backend/.env and fill in HF_TOKEN before
-running. The token is needed by the Pyannote diarization model.
-
-Pipeline
-────────
-  Stage 1 — services.speech_diarization  : WhisperX ASR + Pyannote diarization
-  Stage 2 — services.nlp_module          : DistilRoBERTa emotion / anxiety analysis
-  Stage 3 — fusion                       : Multimodal score weighting → risk flag
-
-NLPAnalyzer is initialised ONCE at module level (singleton pattern).
-Loading a 500 MB model inside an endpoint would reload it on every request.
+NLP integration (per NLP_Neurolytics/INTEGRATION_GUIDE.py)
+──────────────────────────────────────────────────────────
+  • NLPAnalyzer() is initialised ONCE at module level (singleton pattern).
+    Loading a 500 MB model inside an endpoint would reload it on every request.
+  • Every request calls  nlp_analyzer.analyze(patient_transcript)
+  • result.error is ALWAYS checked before using scores.
 """
 
 from __future__ import annotations
@@ -31,24 +24,22 @@ import tempfile
 import time
 from contextlib import asynccontextmanager
 
-# ── Load .env FIRST — before any module that reads os.getenv ──────────────────
-from dotenv import load_dotenv
-load_dotenv()   # reads backend/.env (or any parent-dir .env) into os.environ
-
 from fastapi import FastAPI, File, HTTPException, UploadFile, status, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# ── Our modules ───────────────────────────────────────────────────────────────
+# ── Our modules ──────────────────────────────────────────────────────────────
 from schemas import (
     AnalysisResponse, ErrorResponse, RiskLevel,
     NLPAnalysisResult, EmotionScoresSchema, SpeechAnalysisResult,
 )
-from services.speech_diarization import analyze_speech   # ← services package
+from speech_module import analyze_speech
 from fusion import fuse_signals
 
-# ── NLP module (services package) ─────────────────────────────────────────────
+# ── NLP team's module (NLP_Neurolytics) ─────────────────────────────────────
 from nlp.nlp_schemas import NLPOutput
+# NLPAnalyzer is imported lazily at startup so the app can still run
+# even when torch/transformers are not installed or incompatible.
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -67,16 +58,21 @@ logger = logging.getLogger("main")
 #  NLPAnalyzer singleton
 #  ─────────────────────────────────────────────────────────────────────────────
 #  Initialise at MODULE LEVEL — NOT inside the endpoint.
-#  Loading the 500 MB model on every request would be catastrophic.
+#  This is the pattern the NLP team documented in INTEGRATION_GUIDE.py:
+#
+#      "This loads the 500MB model into RAM.
+#       Do this at module level, NOT inside the endpoint function."
+#
 #  The try/except allows the server to start even when the model is not yet
-#  downloaded (e.g. CI or lightweight test environment), with a degraded fallback.
+#  downloaded (e.g. in a CI or lightweight test environment), with a degraded
+#  NLP fallback.
 # ─────────────────────────────────────────────────────────────────────────────
 
-_nlp_analyzer: "NLPAnalyzer | None" = None
+_nlp_analyzer: NLPAnalyzer | None = None
 
 try:
     logger.info("Loading NLPAnalyzer (DistilRoBERTa) …")
-    from services.nlp_module import NLPAnalyzer   # ← services package
+    from nlp.nlp_module import NLPAnalyzer
     _nlp_analyzer = NLPAnalyzer()
     logger.info("NLPAnalyzer ready ✓")
 except Exception as _nlp_load_error:
@@ -88,8 +84,8 @@ except Exception as _nlp_load_error:
 
 def _run_nlp(text: str) -> NLPOutput:
     """
-    Call the NLP analyzer. Returns a degraded NLPOutput on error.
-    Per integration guide: 'ALWAYS check result.error first.'
+    Call the NLP team's analyzer.  Returns a degraded NLPOutput on error.
+    Per INTEGRATION_GUIDE: 'ALWAYS check result.error first.'
     """
     if _nlp_analyzer is None:
         return NLPOutput(error="NLPAnalyzer failed to load at startup.")
@@ -119,12 +115,11 @@ app = FastAPI(
         "Upload a `.wav` file to `POST /api/v1/analyze-consultation` and receive "
         "a structured JSON payload containing:\n"
         "- Patient transcript and acoustic features (WhisperX)\n"
-        "- Emotion scores and anxiety index (DistilRoBERTa)\n"
+        "- Emotion scores and anxiety index (DistilRoBERTa via NLP_Neurolytics)\n"
         "- A fused final stress risk flag (LOW / MODERATE / HIGH)\n\n"
-        "NLP model: `j-hartmann/emotion-english-distilroberta-base`\n\n"
-        "**Setup:** copy `backend/.env.example` → `backend/.env` and set `HF_TOKEN`."
+        "NLP model: `j-hartmann/emotion-english-distilroberta-base`"
     ),
-    version     = "2.1.0",
+    version     = "2.0.0",
     lifespan    = lifespan,
 )
 
@@ -145,7 +140,10 @@ ALLOWED_EXTENSIONS = {".wav", ".mp3", ".flac", ".m4a"}
 
 
 def _nlp_output_to_schema(nlp: NLPOutput) -> NLPAnalysisResult:
-    """Convert the NLPOutput dataclass → Pydantic NLPAnalysisResult for JSON."""
+    """
+    Convert the NLP team's NLPOutput dataclass → our Pydantic NLPAnalysisResult.
+    Field names are identical, so this is a straight mapping.
+    """
     return NLPAnalysisResult(
         anxiety_score           = nlp.anxiety_score,
         emotion_scores          = EmotionScoresSchema(
@@ -175,9 +173,7 @@ async def health_check():
     return {
         "status":    "ok",
         "service":   "Clinical Dialogue Analyzer",
-        "version":   "2.1.0",
         "nlp_model": "loaded" if _nlp_analyzer else "not_loaded (degraded)",
-        "hf_token":  "set" if os.getenv("HF_TOKEN") else "MISSING — set in backend/.env",
     }
 
 
@@ -207,9 +203,9 @@ async def analyze_consultation(
 
     | Stage | Module | Output |
     |-------|--------|--------|
-    | 1 | services.speech_diarization (WhisperX) | Transcript, WPM, pauses |
-    | 2 | services.nlp_module (DistilRoBERTa)    | Anxiety score, emotion scores |
-    | 3 | fusion algorithm                       | Final stress risk flag |
+    | 1 | WhisperX Speech & Diarization | Transcript, WPM, pauses |
+    | 2 | NLP_Neurolytics (DistilRoBERTa) | Anxiety score, emotion scores |
+    | 3 | Fusion algorithm | Final stress risk flag |
 
     Upload a `.wav` file and receive a complete JSON analysis.
     """
@@ -227,28 +223,10 @@ async def analyze_consultation(
     tmp_path: str | None = None
     try:
         # ── Save upload ──────────────────────────────────────────────────────
-        # seek(0) is critical: FastAPI's SpooledTemporaryFile cursor may be
-        # mid-stream on keep-alive connections, causing a zero-byte write.
-        await audio_file.seek(0)
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
             shutil.copyfileobj(audio_file.file, tmp)
-            # flush Python buffer → OS buffer, then fsync OS buffer → disk.
-            # Without this on Windows, WhisperX can read stale bytes from the
-            # page cache that belonged to the previous request's audio file.
-            tmp.flush()
-            os.fsync(tmp.fileno())
             tmp_path = tmp.name
-
-        file_bytes = os.path.getsize(tmp_path)
-        logger.info(
-            f"[API] Saved upload → {tmp_path}  ({filename})  "
-            f"size={file_bytes:,} bytes"
-        )
-        if file_bytes == 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Uploaded file is empty (0 bytes). Please re-upload the audio file.",
-            )
+        logger.info(f"[API] Saved upload → {tmp_path}  ({filename})")
 
         # ────────────────────────────────────────────────────────────────────
         # Stage 1 — Speech & Diarization
@@ -264,11 +242,12 @@ async def analyze_consultation(
             )
 
         # ────────────────────────────────────────────────────────────────────
-        # Stage 2 — NLP Analysis
+        # Stage 2 — NLP Analysis  (NLP_Neurolytics)
         # ────────────────────────────────────────────────────────────────────
-        logger.info("[API] Stage 2 — NLP Analysis (DistilRoBERTa) …")
+        logger.info("[API] Stage 2 — NLP Analysis (NLP_Neurolytics) …")
         nlp_output = _run_nlp(speech_result.patient_transcript)
 
+        # Log NLP result health per INTEGRATION_GUIDE guidance
         if nlp_output.error:
             logger.warning(
                 f"[API] NLP module returned error: {nlp_output.error}. "
@@ -343,7 +322,7 @@ async def analyze_text(
     ),
 ) -> dict:
     """
-    Run **only** Stage 2 (NLP) on a text string.
+    Run **only** Stage 2 (NLP_Neurolytics) on a text string.
     Useful for rapid testing without an audio file.
 
     Example:

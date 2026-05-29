@@ -15,7 +15,7 @@ clinical_analyzer/
 ├── schemas.py           ← Pydantic API data contracts
 ├── requirements.txt     ← Dependencies (versions locked to NLP team's spec)
 │
-└── ml_models/           ← NLP team's module — DO NOT MODIFY
+└── nlp/                 ← NLP module — DistilRoBERTa emotion analyzer
     ├── __init__.py
     ├── nlp_module.py    ← NLPAnalyzer class (DistilRoBERTa)
     └── nlp_schemas.py   ← NLPOutput + EmotionScores dataclasses
@@ -176,6 +176,6 @@ inside the endpoint. Every request reuses the same loaded instance.
 checked before any score is used. If the NLP module fails, the fusion algorithm
 falls back to a neutral 0.5 score so acoustic analysis can still proceed.
 
-**`ml_models/` is sealed** — `nlp_module.py` and `nlp_schemas.py` are the NLP
+**`nlp/` module** — `nlp_module.py` and `nlp_schemas.py` contain the NLP
 team's deliverable and must not be modified. All adaptation happens at the
 boundary in `main.py` (the `_nlp_output_to_schema()` converter).

@@ -1,7 +1,7 @@
 """
 A thin wrapper copy of the NLP team's NLPAnalyzer for packaging.
-This file was copied into the local `ml_models` package to satisfy
-imports from `main.py` which expect `ml_models.nlp_module`.
+This file is the NLP module with the NLPAnalyzer class for emotion
+and anxiety analysis from patient transcripts.
 """
 
 import re
@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 
 from transformers import pipeline
 
-from ml_models.nlp_schemas import NLPOutput, EmotionScores
+from nlp.nlp_schemas import NLPOutput, EmotionScores
 
 MODEL_NAME = "j-hartmann/emotion-english-distilroberta-base"
 CHUNK_SIZE_TOKENS = 450

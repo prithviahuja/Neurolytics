@@ -13,7 +13,7 @@ Three analyses run on that text:
 
 PUBLIC INTERFACE (this is all the backend needs to know)
 ────────────────────────────────────────────────────────
-    from ml_models.nlp_module import NLPAnalyzer
+    from nlp.nlp_module import NLPAnalyzer
 
     analyzer = NLPAnalyzer()          # Do this ONCE at app startup
     result = analyzer.analyze(text)   # Call this per request
@@ -47,7 +47,7 @@ warnings.filterwarnings("ignore")
 
 from transformers import pipeline
 
-from ml_models.nlp_schemas import NLPOutput, EmotionScores
+from nlp.nlp_schemas import NLPOutput, EmotionScores
 
 
 # ─────────────────────────────────────────────────────────────

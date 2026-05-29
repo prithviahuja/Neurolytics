@@ -51,7 +51,7 @@ class SpeechAnalysisResult(BaseModel):
 class EmotionScoresSchema(BaseModel):
     """
     Raw probability distribution across all 7 DistilRoBERTa emotion classes.
-    Mirrors ml_models.nlp_schemas.EmotionScores exactly.
+    Mirrors nlp.nlp_schemas.EmotionScores exactly.
     Values are floats in [0.0, 1.0] and sum to ~1.0.
     """
     anger:    float = Field(0.0, ge=0.0, le=1.0)
@@ -65,7 +65,7 @@ class EmotionScoresSchema(BaseModel):
 
 class NLPAnalysisResult(BaseModel):
     """
-    Output of the NLP module — mirrors ml_models.nlp_schemas.NLPOutput exactly.
+    Output of the NLP module — mirrors nlp.nlp_schemas.NLPOutput exactly.
 
     Fields
     ------

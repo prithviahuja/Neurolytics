@@ -16,7 +16,7 @@ import os
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
-from ml_models.nlp_module import NLPAnalyzer
+from nlp.nlp_module import NLPAnalyzer
 
 def print_result(label, result):
     print(f"\n{'─'*50}")
