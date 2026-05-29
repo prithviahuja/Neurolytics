@@ -60,7 +60,7 @@ export default function LandingPage() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <Activity className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-semibold text-foreground">Clinical Analyzer</span>
+              <span className="font-semibold text-foreground">Neurolytics</span>
             </div>
             <div className="flex items-center gap-4">
               <Link href="/login">

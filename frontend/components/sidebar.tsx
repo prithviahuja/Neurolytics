@@ -32,7 +32,7 @@ export function Sidebar() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Activity className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg">Clinical</span>
+          <span className="font-bold text-lg">Neurolytics</span>
         </Link>
       </div>
 
